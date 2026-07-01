@@ -1,0 +1,51 @@
+import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
+import { ButtonHTMLAttributes, forwardRef } from "react";
+
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger";
+  size?: "sm" | "md" | "lg";
+  loading?: boolean;
+}
+
+const variants = {
+  primary:
+    "bg-brand-600 text-white hover:bg-brand-700 shadow-sm shadow-brand-600/20 dark:bg-brand-500 dark:hover:bg-brand-600",
+  secondary: "bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600",
+  outline:
+    "border border-slate-300 bg-white text-slate-900 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700",
+  ghost: "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800",
+  danger: "bg-red-600 text-white hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600"
+};
+
+const sizes = {
+  sm: "h-9 px-3 text-sm",
+  md: "h-10 px-4 text-sm",
+  lg: "h-12 px-6 text-base"
+};
+
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    { className, variant = "primary", size = "md", loading, children, disabled, ...props },
+    ref
+  ) => {
+    return (
+      <button
+        ref={ref}
+        disabled={disabled || loading}
+        className={cn(
+          "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-offset-slate-900",
+          variants[variant],
+          sizes[size],
+          className
+        )}
+        {...props}
+      >
+        {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+        {children}
+      </button>
+    );
+  }
+);
+
+Button.displayName = "Button";

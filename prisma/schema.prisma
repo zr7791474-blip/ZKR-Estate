@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  VISITOR
+  USER
+  AGENT
+  ADMIN
+}
+
+enum PropertyStatus {
+  FOR_SALE
+  FOR_RENT
+  SOLD
+  RENTED
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+model User {
+  id           String     @id @default(cuid())
+  name         String
+  email        String     @unique
+  password     String
+  avatar       String?
+  role         Role       @default(USER)
+  phone        String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  properties   Property[]
+  favorites    Favorite[]
+  sentMessages Message[]    @relation("SenderMessages")
+  receivedMessages Message[] @relation("ReceiverMessages")
+  appointments Appointment[]
+
+  accounts     Account[]
+  sessions     Session[]
+}
+
+model Property {
+  id          String         @id @default(cuid())
+  title       String
+  description String
+  price       Float
+  city        String
+  type        String         @default("Apartment")
+  bedrooms    Int
+  bathrooms   Int
+  area        Int            @default(0)
+  images      String[]
+  status      PropertyStatus @default(FOR_SALE)
+  featured    Boolean        @default(false)
+  agentId     String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  agent       User           @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  favoritedBy Favorite[]
+  appointments Appointment[]
+}
+
+model Favorite {
+  id         String   @id @default(cuid())
+  userId     String
+  propertyId String
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, propertyId])
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  content    String
+  senderId   String
+  receiverId String
+  read       Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  sender     User     @relation("SenderMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User     @relation("ReceiverMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+}
+
+model Appointment {
+  id         String            @id @default(cuid())
+  date       DateTime
+  notes      String?
+  status     AppointmentStatus @default(PENDING)
+  userId     String
+  propertyId String
+  createdAt  DateTime          @default(now())
+
+  user       User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property   Property          @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

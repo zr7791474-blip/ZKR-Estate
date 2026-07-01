@@ -1,0 +1,105 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  LayoutDashboard, User, Home, Heart, MessageSquare, Calendar, Users, LogOut, ChevronDown
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { signOut } from "next-auth/react";
+import type { SessionUser } from "@/types";
+
+interface SidebarProps { user: SessionUser; }
+
+export function Sidebar({ user }: SidebarProps) {
+  const pathname = usePathname();
+  const isAdmin = user.role === "ADMIN";
+  const isAgent = user.role === "AGENT" || isAdmin;
+
+  const links = [
+    { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+    { href: "/dashboard/profile", label: "Profile", icon: User },
+    ...(isAgent ? [{ href: "/dashboard/properties", label: "My Properties", icon: Home }] : []),
+    { href: "/dashboard/favorites", label: "Saved", icon: Heart },
+    { href: "/dashboard/messages", label: "Messages", icon: MessageSquare },
+    { href: "/dashboard/appointments", label: "Appointments", icon: Calendar },
+    ...(isAdmin ? [
+      { href: "/admin", label: "Admin Overview", icon: Users },
+      { href: "/admin/users", label: "Manage Users", icon: Users },
+      { href: "/admin/properties", label: "Manage Properties", icon: Home }
+    ] : [])
+  ];
+
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    window.location.href = "/login";
+  };
+
+  return (
+    <aside className="hidden w-64 shrink-0 border-r border-white/5 bg-[#0A0A0C]/80 backdrop-blur-xl lg:flex lg:flex-col">
+      <div className="flex h-16 items-center gap-3 border-b border-white/5 px-5">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 text-xs font-bold text-white shadow-lg shadow-brand-500/20">
+          {user.name?.[0]?.toUpperCase() || "U"}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-sm font-semibold text-white truncate">ZKR Estate</div>
+          <div className="text-[11px] text-zinc-500 truncate">Pro Workspace</div>
+        </div>
+        <ChevronDown className="h-4 w-4 text-zinc-500" />
+      </div>
+
+      <nav className="flex-1 overflow-y-auto p-3 space-y-6">
+        <div>
+          <h3 className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+            Menu
+          </h3>
+          <div className="space-y-1">
+            {links.map((link) => {
+              const active = link.href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-all duration-200",
+                    active
+                      ? "bg-white/5 text-white shadow-sm"
+                      : "text-zinc-400 hover:bg-white/5 hover:text-white"
+                  )}
+                >
+                  {active && (
+                    <div className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-brand-500 transition-all" />
+                  )}
+                  <link.icon className={cn("h-4 w-4 transition-colors", active ? "text-brand-400" : "text-zinc-500 group-hover:text-zinc-300")} />
+                  {link.label}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </nav>
+
+      <div className="border-t border-white/5 p-3">
+        <div className="flex items-center gap-3 rounded-lg px-3 py-2 mb-1">
+          <div className="relative">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-accent-500 text-[11px] font-bold text-white">
+              {user.name?.[0]?.toUpperCase() || "U"}
+            </div>
+            <div className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-[#0A0A0C] bg-emerald-500" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="truncate text-[13px] font-medium text-white">{user.name}</div>
+            <div className="truncate text-[11px] text-zinc-500">{user.role}</div>
+          </div>
+        </div>
+        <button
+          onClick={handleLogout}
+          className="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium text-zinc-400 transition-all hover:bg-red-500/10 hover:text-red-400"
+        >
+          <LogOut className="h-4 w-4" />
+          Sign out
+        </button>
+      </div>
+    </aside>
+  );
+}
