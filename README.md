@@ -36,11 +36,11 @@ A modern full-stack real estate platform for browsing, managing, and booking pro
 
 | Screen 1 | Screen 2 |
 |----------|----------|
-| ![Screen 1](public/screens/screen1.JPG) | ![Screen 2](public/screenshots/screen2.JPG) |
+| ![Screen 1](public/screens/screen1.JPG) | ![Screen 2](public/screens/screen2.JPG) |
 
 | Screen 3 | Screen 4 |
 |----------|----------|
-| ![Screen 3](public/screens/screen3.JPG) | ![Screen 4](public/screenshots/screen4.JPG) |
+| ![Screen 3](public/screens/screen3.JPG) | ![Screen 4](public/screens/screen4.JPG) |
 
 ---
 
