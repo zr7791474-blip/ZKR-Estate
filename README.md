@@ -5,9 +5,28 @@ A modern full-stack real estate platform for browsing, managing, and booking pro
 
 ---
 
-## Banner
 
-![ZKR Estate Banner](public/logo/zkr.jpg)
+<p align="center">
+  <img src="public/logo/zkr.jpg" alt="ZKR Estate Logo" width="140" />
+</p>
+
+<p align="center">
+  A modern full-stack real estate platform for browsing, managing, and booking property listings.
+</p>
+
+<p align="center">
+  Built with:
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma" />
+  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" />
+  <img src="https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" />
+  <img src="https://img.shields.io/badge/Auth.js-000000?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Zustand-FF6B6B?style=for-the-badge" />
+</p>
 
 ---
 
