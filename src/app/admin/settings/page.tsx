@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Settings as SettingsIcon, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/providers/toast-provider";
 
 interface SiteSettings {
   siteName: string;
@@ -17,6 +18,7 @@ export default function AdminSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   useEffect(() => {
     fetch("/api/admin/settings")
@@ -42,12 +44,15 @@ export default function AdminSettingsPage() {
       const json = await res.json();
       if (!res.ok) {
         setError(json.error || "Failed to save settings");
+        showToast(json.error || "Failed to save settings", "error");
         return;
       }
       setSaved(true);
+      showToast("Settings saved.", "success");
       setTimeout(() => setSaved(false), 2500);
     } catch {
       setError("Network error");
+      showToast("Network error — please try again.", "error");
     } finally {
       setSaving(false);
     }

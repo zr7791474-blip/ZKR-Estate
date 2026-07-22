@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, User, Home, Heart, MessageSquare, Calendar, Users,
-  LogOut, ChevronDown, Building2, BarChart3, Settings, LifeBuoy
+  LogOut, ChevronDown, Building2, BarChart3, Settings, LifeBuoy, Menu, X
 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { signOut } from "next-auth/react";
 import type { SessionUser } from "@/types";
@@ -14,8 +15,22 @@ interface SidebarProps { user: SessionUser; }
 
 export function Sidebar({ user }: SidebarProps) {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
   const isAdmin = user.role === "ADMIN";
   const isAgent = user.role === "AGENT" || isAdmin;
+
+  // Close the mobile drawer automatically on navigation
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  // Lock body scroll while the mobile drawer is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   const links = [
     { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -43,19 +58,8 @@ export function Sidebar({ user }: SidebarProps) {
     window.location.href = "/login";
   };
 
-  return (
-    <aside className="hidden w-64 shrink-0 border-r border-white/5 bg-[#0A0A0C]/80 backdrop-blur-xl lg:flex lg:flex-col">
-      <div className="flex h-16 items-center gap-3 border-b border-white/5 px-5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 text-xs font-bold text-white shadow-lg shadow-brand-500/20">
-          {user.name?.[0]?.toUpperCase() || "U"}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="text-sm font-semibold text-white truncate">ZKR Estate</div>
-          <div className="text-[11px] text-zinc-500 truncate">Pro Workspace</div>
-        </div>
-        <ChevronDown className="h-4 w-4 text-zinc-500" />
-      </div>
-
+  const NavContent = () => (
+    <>
       <nav className="flex-1 overflow-y-auto p-3 space-y-6">
         <div>
           <h3 className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
@@ -139,6 +143,75 @@ export function Sidebar({ user }: SidebarProps) {
           Sign out
         </button>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Mobile trigger — floating action button, positioned to never collide with the shared Navbar's logo/icons */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        aria-label="Open navigation menu"
+        className="fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-brand-500 text-white shadow-lg shadow-brand-500/30 transition-transform hover:scale-105 active:scale-95 lg:hidden"
+      >
+        <Menu className="h-5 w-5" />
+      </button>
+
+      {/* Desktop sidebar */}
+      <aside className="hidden w-64 shrink-0 border-r border-white/5 bg-[#0A0A0C]/80 backdrop-blur-xl lg:flex lg:flex-col">
+        <div className="flex h-16 items-center gap-3 border-b border-white/5 px-5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 text-xs font-bold text-white shadow-lg shadow-brand-500/20">
+            {user.name?.[0]?.toUpperCase() || "U"}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold text-white truncate">ZKR Estate</div>
+            <div className="text-[11px] text-zinc-500 truncate">Pro Workspace</div>
+          </div>
+          <ChevronDown className="h-4 w-4 text-zinc-500" />
+        </div>
+        <NavContent />
+      </aside>
+
+      {/* Mobile drawer + backdrop */}
+      <div
+        className={cn(
+          "fixed inset-0 z-50 lg:hidden",
+          mobileOpen ? "pointer-events-auto" : "pointer-events-none"
+        )}
+        aria-hidden={!mobileOpen}
+      >
+        <div
+          onClick={() => setMobileOpen(false)}
+          className={cn(
+            "absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300",
+            mobileOpen ? "opacity-100" : "opacity-0"
+          )}
+        />
+        <aside
+          className={cn(
+            "absolute left-0 top-0 flex h-full w-72 max-w-[85vw] flex-col border-r border-white/10 bg-[#0A0A0C] transition-transform duration-300 ease-out",
+            mobileOpen ? "translate-x-0" : "-translate-x-full"
+          )}
+        >
+          <div className="flex h-16 items-center gap-3 border-b border-white/5 px-5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 text-xs font-bold text-white shadow-lg shadow-brand-500/20">
+              {user.name?.[0]?.toUpperCase() || "U"}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-semibold text-white truncate">ZKR Estate</div>
+              <div className="text-[11px] text-zinc-500 truncate">Pro Workspace</div>
+            </div>
+            <button
+              onClick={() => setMobileOpen(false)}
+              aria-label="Close navigation menu"
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-400 hover:bg-white/5 hover:text-white"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <NavContent />
+        </aside>
+      </div>
+    </>
   );
 }

@@ -5,6 +5,7 @@ import { Calendar, MapPin, User } from "lucide-react";
 import { Empty } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/providers/toast-provider";
 import { formatDate } from "@/lib/utils";
 
 interface Appointment {
@@ -25,6 +26,8 @@ const statusStyle = {
 export default function AdminAppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   const load = async () => {
     try {
@@ -43,15 +46,23 @@ export default function AdminAppointmentsPage() {
   }, []);
 
   const updateStatus = async (id: string, status: string) => {
+    setUpdatingId(id);
     try {
-      await fetch("/api/appointments", {
+      const res = await fetch("/api/appointments", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, status })
       });
-      load();
+      if (!res.ok) throw new Error("Request failed");
+      showToast(
+        status === "CONFIRMED" ? "Appointment confirmed." : "Appointment declined.",
+        status === "CONFIRMED" ? "success" : "info"
+      );
+      await load();
     } catch {
-      // no-op — load() below refreshes state regardless
+      showToast("Couldn't update that appointment. Please try again.", "error");
+    } finally {
+      setUpdatingId(null);
     }
   };
 
@@ -72,8 +83,10 @@ export default function AdminAppointmentsPage() {
       </div>
 
       {loading ? (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-12 text-center backdrop-blur-xl">
-          <div className="text-sm font-medium text-zinc-400">Loading appointments...</div>
+        <div className="space-y-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="h-32 animate-pulse rounded-2xl border border-white/10 bg-white/[0.02]" />
+          ))}
         </div>
       ) : appointments.length === 0 ? (
         <Empty
@@ -128,12 +141,18 @@ export default function AdminAppointmentsPage() {
 
                 {a.status === "PENDING" && (
                   <div className="flex shrink-0 gap-2 sm:flex-col">
-                    <Button size="sm" onClick={() => updateStatus(a.id, "CONFIRMED")} className="flex-1 sm:flex-none">
+                    <Button
+                      size="sm"
+                      loading={updatingId === a.id}
+                      onClick={() => updateStatus(a.id, "CONFIRMED")}
+                      className="flex-1 sm:flex-none"
+                    >
                       Confirm
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
+                      disabled={updatingId === a.id}
                       onClick={() => updateStatus(a.id, "CANCELLED")}
                       className="flex-1 border-red-500/20 text-red-400 hover:bg-red-500/10 sm:flex-none"
                     >

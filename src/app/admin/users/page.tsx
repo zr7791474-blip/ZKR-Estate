@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Users } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Users, Search } from "lucide-react";
 import { DataTable } from "@/components/ui/data-table";
 import { Badge } from "@/components/ui/badge";
+import { Select } from "@/components/ui/select";
 import { formatDate, getInitials, cn } from "@/lib/utils";
 
 interface UserRow {
@@ -16,9 +17,18 @@ interface UserRow {
   _count: { properties: number };
 }
 
+const roleOptions = [
+  { value: "ALL", label: "All roles" },
+  { value: "USER", label: "User" },
+  { value: "AGENT", label: "Agent" },
+  { value: "ADMIN", label: "Admin" }
+];
+
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<UserRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState("ALL");
 
   useEffect(() => {
     fetch("/api/users")
@@ -29,6 +39,20 @@ export default function AdminUsersPage() {
       })
       .catch(() => setLoading(false));
   }, []);
+
+  const visible = useMemo(() => {
+    let rows = users;
+    if (roleFilter !== "ALL") {
+      rows = rows.filter((u) => u.role === roleFilter);
+    }
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      rows = rows.filter(
+        (u) => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
+      );
+    }
+    return rows;
+  }, [users, search, roleFilter]);
 
   const columns = [
     {
@@ -99,7 +123,7 @@ export default function AdminUsersPage() {
             Manage Users
           </h1>
           <p className="mt-1 text-sm text-zinc-400">
-            {users.length} registered users in the system.
+            {loading ? "Loading…" : `${visible.length} of ${users.length} registered users`}
           </p>
         </div>
         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-500/10 text-brand-400">
@@ -107,17 +131,41 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="relative flex-1">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name or email..."
+            className="w-full rounded-xl border border-white/10 bg-white/[0.02] py-2.5 pl-10 pr-3 text-sm text-white placeholder:text-zinc-500 outline-none transition-colors focus:border-brand-500/50 focus:bg-white/[0.04]"
+          />
+        </div>
+        <Select
+          value={roleFilter}
+          onChange={(e) => setRoleFilter(e.target.value)}
+          options={roleOptions}
+          className="border-white/10 bg-white/[0.02] text-white sm:w-44 [&>option]:bg-[#18181B]"
+        />
+      </div>
+
       <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 backdrop-blur-xl">
         {loading ? (
-          <div className="py-12 text-center text-sm font-medium text-zinc-400">
-            Loading users...
+          <div className="space-y-3">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="h-12 animate-pulse rounded-lg bg-white/5" />
+            ))}
           </div>
         ) : (
           <DataTable
             columns={columns}
-            data={users}
+            data={visible}
             keyExtractor={(r) => r.id}
-            emptyMessage="No registered users yet."
+            emptyMessage={
+              users.length === 0
+                ? "No registered users yet."
+                : "No users match your search or filters."
+            }
           />
         )}
       </div>
