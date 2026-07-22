@@ -1,6 +1,21 @@
 import type { Metadata } from "next";
+import { Inter, Fraunces } from "next/font/google";
 import { ThemeProvider, ThemeScript } from "@/components/providers/theme-provider";
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap"
+});
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+  display: "swap"
+});
 
 export const metadata: Metadata = {
   title: "ZKR Estate — Find Your Dream Home",
@@ -14,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${fraunces.variable}`}>
       <head>
         <ThemeScript />
       </head>

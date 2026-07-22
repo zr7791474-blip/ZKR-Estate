@@ -45,12 +45,17 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   const session = await auth();
   if (!session || (session.user as any).role !== "ADMIN") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const { searchParams } = new URL(request.url);
+  const role = searchParams.get("role");
+  const where = role ? { role: role as any } : {};
+
   const users = await prisma.user.findMany({
+    where,
     orderBy: { createdAt: "desc" },
     select: {
       id: true,

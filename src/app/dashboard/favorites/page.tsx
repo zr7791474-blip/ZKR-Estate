@@ -24,30 +24,34 @@ export default function FavoritesPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="font-display text-2xl font-medium tracking-tight text-white">
             Saved Properties
           </h1>
-          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+          <p className="mt-1 text-sm text-zinc-400">
             Properties you've saved for later viewing.
           </p>
         </div>
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 text-red-400">
           <Heart className="h-6 w-6" />
         </div>
       </div>
 
       {loading ? (
-        <div className="rounded-2xl border border-slate-200/60 bg-white p-12 text-center shadow-sm dark:border-slate-700/60 dark:bg-slate-800/50">
-          <div className="text-sm font-medium text-slate-500 dark:text-slate-400">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-12 text-center backdrop-blur-xl">
+          <div className="text-sm font-medium text-zinc-400">
             Loading saved properties...
           </div>
         </div>
       ) : favorites.length === 0 ? (
-        <div className="rounded-2xl border border-slate-200/60 bg-white p-12 shadow-sm dark:border-slate-700/60 dark:bg-slate-800/50">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-12 backdrop-blur-xl">
           <Empty
             icon={<Heart className="h-6 w-6" />}
             title="No saved properties"
             description="Click the heart icon on any property to save it here."
+            className="border-white/10 bg-transparent"
+            iconClassName="bg-white/5 text-zinc-400"
+            titleClassName="text-white"
+            descriptionClassName="text-zinc-400"
           />
         </div>
       ) : (

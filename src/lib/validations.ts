@@ -52,6 +52,12 @@ export const appointmentSchema = z.object({
   propertyId: z.string()
 });
 
+export const siteSettingsSchema = z.object({
+  siteName: z.string().min(2, "Site name must be at least 2 characters"),
+  supportEmail: z.string().email("Invalid email"),
+  maintenanceMode: z.boolean()
+});
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type ProfileInput = z.infer<typeof profileSchema>;
@@ -59,3 +65,4 @@ export type PropertyInput = z.infer<typeof propertySchema>;
 export type SearchInput = z.infer<typeof searchSchema>;
 export type MessageInput = z.infer<typeof messageSchema>;
 export type AppointmentInput = z.infer<typeof appointmentSchema>;
+export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;

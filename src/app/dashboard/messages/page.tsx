@@ -85,40 +85,44 @@ export default function MessagesPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Messages</h1>
-        <p className="mt-1 text-slate-600 dark:text-slate-400">
+        <h1 className="font-display text-2xl font-medium text-white">Messages</h1>
+        <p className="mt-1 text-zinc-400">
           Conversations with agents and users.
         </p>
       </div>
 
       {loading ? (
-        <div className="py-12 text-center text-sm text-slate-500 dark:text-slate-400">Loading...</div>
+        <div className="py-12 text-center text-sm text-zinc-400">Loading...</div>
       ) : convList.length === 0 ? (
         <Empty
           icon={<MessageSquare className="h-6 w-6" />}
           title="No messages yet"
           description="Contact an agent from any property page to start a conversation."
+          className="border-white/10 bg-transparent"
+          iconClassName="bg-white/5 text-zinc-400"
+          titleClassName="text-white"
+          descriptionClassName="text-zinc-400"
         />
       ) : (
-        <div className="grid h-[600px] gap-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800 lg:grid-cols-3">
-          <div className="overflow-y-auto border-r border-slate-200 dark:border-slate-700">
+        <div className="grid h-[600px] gap-4 overflow-hidden rounded-xl border border-white/10 bg-white/[0.02] backdrop-blur-xl lg:grid-cols-3">
+          <div className="overflow-y-auto border-r border-white/10">
             {convList.map((c) => (
               <button
                 key={c.partner.id}
                 onClick={() => setSelected(c.partner.id)}
                 className={
-                  "flex w-full items-center gap-3 border-b border-slate-100 p-4 text-left transition dark:border-slate-700 " +
-                  (selected === c.partner.id ? "bg-brand-50 dark:bg-brand-900/20" : "hover:bg-slate-50 dark:hover:bg-slate-700")
+                  "flex w-full items-center gap-3 border-b border-white/5 p-4 text-left transition " +
+                  (selected === c.partner.id ? "bg-brand-500/10" : "hover:bg-white/5")
                 }
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700 dark:bg-brand-900/30 dark:text-brand-400">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500/15 text-sm font-bold text-brand-400">
                   {getInitials(c.partner.name)}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-semibold text-slate-900 dark:text-white">
+                  <div className="truncate text-sm font-semibold text-white">
                     {c.partner.name}
                   </div>
-                  <div className="truncate text-xs text-slate-500 dark:text-slate-400">
+                  <div className="truncate text-xs text-zinc-400">
                     {c.last.content}
                   </div>
                 </div>
@@ -142,14 +146,14 @@ export default function MessagesPage() {
                             "max-w-[75%] rounded-2xl px-4 py-2 text-sm " +
                             (mine
                               ? "bg-brand-600 text-white"
-                              : "bg-slate-100 text-slate-900 dark:bg-slate-700 dark:text-white")
+                              : "bg-white/10 text-white")
                           }
                         >
                           <div>{m.content}</div>
                           <div
                             className={
                               "mt-1 text-[10px] " +
-                              (mine ? "text-brand-100" : "text-slate-500 dark:text-slate-400")
+                              (mine ? "text-brand-100" : "text-zinc-400")
                             }
                           >
                             {formatDate(m.createdAt)}
@@ -161,7 +165,7 @@ export default function MessagesPage() {
                 </div>
                 <form
                   onSubmit={send}
-                  className="flex items-center gap-2 border-t border-slate-200 p-3 dark:border-slate-700"
+                  className="flex items-center gap-2 border-t border-white/10 p-3"
                 >
                   <Input
                     placeholder="Type a message..."
@@ -175,7 +179,7 @@ export default function MessagesPage() {
                 </form>
               </>
             ) : (
-              <div className="flex flex-1 items-center justify-center text-sm text-slate-500 dark:text-slate-400">
+              <div className="flex flex-1 items-center justify-center text-sm text-zinc-400">
                 Select a conversation
               </div>
             )}

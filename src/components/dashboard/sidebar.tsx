@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard, User, Home, Heart, MessageSquare, Calendar, Users, LogOut, ChevronDown
+  LayoutDashboard, User, Home, Heart, MessageSquare, Calendar, Users,
+  LogOut, ChevronDown, Building2, BarChart3, Settings, LifeBuoy
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOut } from "next-auth/react";
@@ -22,12 +23,19 @@ export function Sidebar({ user }: SidebarProps) {
     ...(isAgent ? [{ href: "/dashboard/properties", label: "My Properties", icon: Home }] : []),
     { href: "/dashboard/favorites", label: "Saved", icon: Heart },
     { href: "/dashboard/messages", label: "Messages", icon: MessageSquare },
-    { href: "/dashboard/appointments", label: "Appointments", icon: Calendar },
-    ...(isAdmin ? [
-      { href: "/admin", label: "Admin Overview", icon: Users },
-      { href: "/admin/users", label: "Manage Users", icon: Users },
-      { href: "/admin/properties", label: "Manage Properties", icon: Home }
-    ] : [])
+    { href: "/dashboard/appointments", label: "Appointments", icon: Calendar }
+  ];
+
+  const adminLinks = [
+    { href: "/admin", label: "Admin Overview", icon: LayoutDashboard },
+    { href: "/admin/properties", label: "Properties", icon: Building2 },
+    { href: "/admin/users", label: "Users", icon: Users },
+    { href: "/admin/agents", label: "Agents", icon: User },
+    { href: "/admin/messages", label: "Messages", icon: MessageSquare },
+    { href: "/admin/appointments", label: "Appointments", icon: Calendar },
+    { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+    { href: "/admin/settings", label: "Settings", icon: Settings },
+    { href: "/admin/help", label: "Help & Support", icon: LifeBuoy }
   ];
 
   const handleLogout = async () => {
@@ -77,6 +85,37 @@ export function Sidebar({ user }: SidebarProps) {
             })}
           </div>
         </div>
+
+        {isAdmin && (
+          <div>
+            <h3 className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+              Admin
+            </h3>
+            <div className="space-y-1">
+              {adminLinks.map((link) => {
+                const active = link.href === "/admin" ? pathname === "/admin" : pathname.startsWith(link.href);
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={cn(
+                      "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-all duration-200",
+                      active
+                        ? "bg-white/5 text-white shadow-sm"
+                        : "text-zinc-400 hover:bg-white/5 hover:text-white"
+                    )}
+                  >
+                    {active && (
+                      <div className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-accent-500 transition-all" />
+                    )}
+                    <link.icon className={cn("h-4 w-4 transition-colors", active ? "text-accent-400" : "text-zinc-500 group-hover:text-zinc-300")} />
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </nav>
 
       <div className="border-t border-white/5 p-3">

@@ -22,7 +22,7 @@ export function HeroSection({ user, appointmentsCount, messagesCount }: HeroSect
             <Sparkles className="h-5 w-5 text-brand-400" />
             <span className="text-sm font-medium text-brand-400">Dashboard Overview</span>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
+          <h1 className="font-display text-3xl font-medium tracking-tight text-white md:text-4xl">
             Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 18 ? "afternoon" : "evening"}, {user.name.split(" ")[0]} 👋
           </h1>
           <p className="text-base text-zinc-400">

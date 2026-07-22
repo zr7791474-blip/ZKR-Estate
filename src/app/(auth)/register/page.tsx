@@ -69,13 +69,13 @@ export default function RegisterPage() {
           </div>
           <span className="text-xl font-bold text-slate-900 dark:text-white">ZKR Estate</span>
         </Link>
-        <h1 className="mt-4 text-2xl font-bold text-slate-900 dark:text-white">Create account</h1>
+        <h1 className="mt-4 font-display text-3xl font-medium text-slate-900 dark:text-white">Create account</h1>
         <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
           Join ZKR Estate and start exploring
         </p>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+      <div className="rounded-2xl border border-slate-200/70 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.06)] dark:border-slate-700/70 dark:bg-slate-800/60">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
             label="Full name"

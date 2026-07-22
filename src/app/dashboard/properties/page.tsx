@@ -165,7 +165,7 @@ export default function MyPropertiesPage() {
             variant="ghost"
             size="sm"
             onClick={() => onDelete(r.id)}
-            className="text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+            className="text-red-400 hover:bg-red-500/10"
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -178,8 +178,8 @@ export default function MyPropertiesPage() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">My Properties</h1>
-          <p className="mt-1 text-slate-600 dark:text-slate-400">
+          <h1 className="font-display text-2xl font-medium text-white">My Properties</h1>
+          <p className="mt-1 text-zinc-400">
             Manage your listings.
           </p>
         </div>
@@ -190,13 +190,17 @@ export default function MyPropertiesPage() {
       </div>
 
       {loading ? (
-        <div className="py-12 text-center text-sm text-slate-500 dark:text-slate-400">
+        <div className="py-12 text-center text-sm text-zinc-400">
           Loading...
         </div>
       ) : properties.length === 0 ? (
         <Empty
           title="No properties yet"
           description="Click 'Add property' to create your first listing."
+          className="border-white/10 bg-transparent"
+          iconClassName="bg-white/5 text-zinc-400"
+          titleClassName="text-white"
+          descriptionClassName="text-zinc-400"
         />
       ) : (
         <DataTable columns={columns} data={properties} keyExtractor={(r) => r.id} />
@@ -245,7 +249,7 @@ export default function MyPropertiesPage() {
             {...register("images")}
           />
           {error && (
-            <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400">
+            <div className="rounded-lg bg-red-500/10 p-3 text-sm text-red-400">
               {error}
             </div>
           )}

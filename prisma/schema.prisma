@@ -133,3 +133,13 @@ model Session {
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+// Added for Admin > Settings. Single-row table (id is always "singleton").
+// Purely additive — does not modify any existing model or data.
+model SiteSettings {
+  id              String   @id @default("singleton")
+  siteName        String   @default("ZKR Estate")
+  supportEmail    String   @default("support@zkrestate.com")
+  maintenanceMode Boolean  @default(false)
+  updatedAt       DateTime @updatedAt
+}

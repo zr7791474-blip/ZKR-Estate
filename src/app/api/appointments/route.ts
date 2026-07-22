@@ -3,18 +3,24 @@ import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { appointmentSchema } from "@/lib/validations";
 
-export async function GET() {
+export async function GET(request: Request) {
   const session = await auth();
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const userId = (session.user as any).id;
   const userRole = (session.user as any).role;
+  const { searchParams } = new URL(request.url);
+  const scope = searchParams.get("scope");
 
-  const where: any =
-    userRole === "AGENT" || userRole === "ADMIN"
-      ? { property: { agentId: userId } }
-      : { userId };
+  let where: any;
+  if (scope === "all" && userRole === "ADMIN") {
+    where = {};
+  } else if (userRole === "AGENT" || userRole === "ADMIN") {
+    where = { property: { agentId: userId } };
+  } else {
+    where = { userId };
+  }
 
   const appointments = await prisma.appointment.findMany({
     where,

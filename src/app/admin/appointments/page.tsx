@@ -16,31 +16,22 @@ interface Appointment {
   property: { id: string; title: string; city: string; agent: { name: string } };
 }
 
-const statusVariant = {
-  PENDING: "warning",
-  CONFIRMED: "success",
-  CANCELLED: "danger"
+const statusStyle = {
+  PENDING: "bg-amber-500/10 text-amber-400",
+  CONFIRMED: "bg-emerald-500/10 text-emerald-400",
+  CANCELLED: "bg-red-500/10 text-red-400"
 } as const;
 
-export default function AppointmentsPage() {
+export default function AdminAppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [role, setRole] = useState<string>("USER");
 
   const load = async () => {
     try {
-      const [aptsRes, sessionRes] = await Promise.all([
-        fetch("/api/appointments"),
-        fetch("/api/auth/session")
-      ]);
-      
-      const apts = aptsRes.ok ? await aptsRes.json().catch(() => []) : [];
-      const session = sessionRes.ok ? await sessionRes.json().catch(() => null) : null;
-      
-      setAppointments(Array.isArray(apts) ? apts : []);
-      setRole(session?.user?.role || "USER");
-    } catch (error) {
-      console.error("Failed to load appointments:", error);
+      const res = await fetch("/api/appointments?scope=all");
+      const data = res.ok ? await res.json().catch(() => []) : [];
+      setAppointments(Array.isArray(data) ? data : []);
+    } catch {
       setAppointments([]);
     } finally {
       setLoading(false);
@@ -59,12 +50,10 @@ export default function AppointmentsPage() {
         body: JSON.stringify({ id, status })
       });
       load();
-    } catch (error) {
-      console.error("Failed to update status:", error);
+    } catch {
+      // no-op — load() below refreshes state regardless
     }
   };
-
-  const isAgent = role === "AGENT" || role === "ADMIN";
 
   return (
     <div className="space-y-8">
@@ -74,9 +63,7 @@ export default function AppointmentsPage() {
             Appointments
           </h1>
           <p className="mt-1 text-sm text-zinc-400">
-            {isAgent
-              ? "Manage viewing requests for your properties."
-              : "Your scheduled property viewings."}
+            All viewing requests across the platform.
           </p>
         </div>
         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-500/10 text-brand-400">
@@ -86,22 +73,18 @@ export default function AppointmentsPage() {
 
       {loading ? (
         <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-12 text-center backdrop-blur-xl">
-          <div className="text-sm font-medium text-zinc-400">
-            Loading appointments...
-          </div>
+          <div className="text-sm font-medium text-zinc-400">Loading appointments...</div>
         </div>
       ) : appointments.length === 0 ? (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-12 backdrop-blur-xl">
-          <Empty
-            icon={<Calendar className="h-6 w-6" />}
-            title="No appointments"
-            description="Book a viewing from any property page to see it here."
-            className="border-white/10 bg-transparent"
-            iconClassName="bg-white/5 text-zinc-400"
-            titleClassName="text-white"
-            descriptionClassName="text-zinc-400"
-          />
-        </div>
+        <Empty
+          icon={<Calendar className="h-6 w-6" />}
+          title="No appointments"
+          description="Viewing requests booked by users will appear here."
+          className="border-white/10 bg-transparent"
+          iconClassName="bg-white/5 text-zinc-400"
+          titleClassName="text-white"
+          descriptionClassName="text-zinc-400"
+        />
       ) : (
         <div className="space-y-4">
           {appointments.map((a) => (
@@ -112,14 +95,12 @@ export default function AppointmentsPage() {
               <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex-1 space-y-3">
                   <div className="flex flex-wrap items-center gap-3">
-                    <h3 className="text-lg font-semibold text-white">
-                      {a.property.title}
-                    </h3>
-                    <Badge variant={statusVariant[a.status]} className="px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider">
+                    <h3 className="text-lg font-semibold text-white">{a.property.title}</h3>
+                    <Badge className={`px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider ${statusStyle[a.status]}`}>
                       {a.status}
                     </Badge>
                   </div>
-                  
+
                   <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-400">
                     <div className="flex items-center gap-1.5">
                       <MapPin className="h-4 w-4 text-zinc-500" />
@@ -131,9 +112,11 @@ export default function AppointmentsPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1.5 text-xs font-medium text-zinc-400">
-                    <User className="h-3.5 w-3.5" />
-                    {isAgent ? `Requested by: ${a.user.name}` : `Agent: ${a.property.agent.name}`}
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-medium text-zinc-400">
+                    <span className="flex items-center gap-1.5">
+                      <User className="h-3.5 w-3.5" /> Requested by {a.user.name}
+                    </span>
+                    <span>Agent: {a.property.agent.name}</span>
                   </div>
 
                   {a.notes && (
@@ -143,13 +126,9 @@ export default function AppointmentsPage() {
                   )}
                 </div>
 
-                {isAgent && a.status === "PENDING" && (
+                {a.status === "PENDING" && (
                   <div className="flex shrink-0 gap-2 sm:flex-col">
-                    <Button
-                      size="sm"
-                      onClick={() => updateStatus(a.id, "CONFIRMED")}
-                      className="flex-1 sm:flex-none"
-                    >
+                    <Button size="sm" onClick={() => updateStatus(a.id, "CONFIRMED")} className="flex-1 sm:flex-none">
                       Confirm
                     </Button>
                     <Button

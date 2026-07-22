@@ -65,7 +65,7 @@ export default async function PropertyDetailsPage({ params }: PageProps) {
         </div>
 
         <div className="mb-8">
-          <h1 className="mb-3 text-3xl font-bold tracking-tight text-slate-900 md:text-4xl dark:text-white">
+          <h1 className="mb-3 font-display text-3xl font-medium tracking-tight text-slate-900 md:text-4xl dark:text-white">
             {property.title}
           </h1>
           <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">

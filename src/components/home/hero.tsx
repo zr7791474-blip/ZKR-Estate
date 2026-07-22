@@ -20,11 +20,11 @@ export function Hero() {
           </div>
 
           <h1
-            className="mx-auto mb-6 max-w-4xl text-4xl font-semibold leading-[1.02] tracking-tight text-white md:text-6xl lg:text-7xl animate-fade-in-up opacity-0"
+            className="mx-auto mb-6 max-w-4xl font-display text-4xl font-medium leading-[1.05] tracking-tight text-white md:text-6xl lg:text-7xl animate-fade-in-up opacity-0"
             style={{ animationDelay: "100ms" }}
           >
             Find a place you'll love to{" "}
-            <span className="bg-gradient-to-r from-brand-300 via-orange-200 to-cyan-200 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-brand-300 via-orange-200 to-cyan-200 bg-clip-text italic text-transparent">
               call home
             </span>
           </h1>

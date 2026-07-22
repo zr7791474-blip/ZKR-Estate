@@ -28,7 +28,7 @@ export async function FeaturedProperties() {
             <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400">
               Featured
             </p>
-            <h2 className="text-3xl font-bold text-slate-900 md:text-4xl dark:text-white">
+            <h2 className="font-display text-3xl font-medium text-slate-900 md:text-4xl dark:text-white">
               Hand-picked properties
             </h2>
             <p className="mt-2 text-slate-600 dark:text-slate-400">

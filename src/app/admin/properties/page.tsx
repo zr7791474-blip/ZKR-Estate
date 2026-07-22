@@ -74,6 +74,13 @@ export default function AdminPropertiesPage() {
               ? "info"
               : "default"
           }
+          className={
+            r.status === "FOR_SALE"
+              ? "bg-emerald-500/10 text-emerald-400"
+              : r.status === "FOR_RENT"
+              ? "bg-brand-500/10 text-brand-400"
+              : "bg-white/10 text-zinc-300"
+          }
         >
           {r.status.replace("_", " ")}
         </Badge>
@@ -88,7 +95,7 @@ export default function AdminPropertiesPage() {
             variant="ghost"
             size="sm"
             onClick={() => onDelete(r.id)}
-            className="text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+            className="text-red-400 hover:bg-red-500/10"
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -101,25 +108,30 @@ export default function AdminPropertiesPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="font-display text-2xl font-medium tracking-tight text-white">
             Manage Properties
           </h1>
-          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+          <p className="mt-1 text-sm text-zinc-400">
             {properties.length} total listings in the database.
           </p>
         </div>
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-500/10 text-brand-400">
           <Building2 className="h-6 w-6" />
         </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-200/60 bg-white p-6 shadow-sm dark:border-slate-700/60 dark:bg-slate-800/50">
+      <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 backdrop-blur-xl">
         {loading ? (
-          <div className="py-12 text-center text-sm font-medium text-slate-500 dark:text-slate-400">
+          <div className="py-12 text-center text-sm font-medium text-zinc-400">
             Loading properties...
           </div>
         ) : (
-          <DataTable columns={columns} data={properties} keyExtractor={(r) => r.id} />
+          <DataTable
+            columns={columns}
+            data={properties}
+            keyExtractor={(r) => r.id}
+            emptyMessage="No properties have been listed yet."
+          />
         )}
       </div>
     </div>

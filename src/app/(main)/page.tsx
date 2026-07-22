@@ -45,7 +45,7 @@ export default async function HomePage() {
         >
           <div className="container-app">
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="mb-4 text-3xl font-bold text-slate-900 md:text-4xl dark:text-white">
+              <h2 className="mb-4 font-display text-3xl font-medium text-slate-900 md:text-4xl dark:text-white">
                 Ready to find your next home?
               </h2>
               <p className="mb-8 text-lg leading-relaxed text-slate-600 dark:text-slate-300">

@@ -62,25 +62,25 @@ export default function ProfilePage() {
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="font-display text-2xl font-medium tracking-tight text-white">
           Profile Settings
         </h1>
-        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+        <p className="mt-1 text-sm text-zinc-400">
           Manage your account information and preferences.
         </p>
       </div>
 
-      <div className="rounded-2xl border border-slate-200/60 bg-white p-6 shadow-sm dark:border-slate-700/60 dark:bg-slate-800/50 md:p-8">
-        <div className="mb-8 flex items-center gap-5 border-b border-slate-100 pb-8 dark:border-slate-700">
+      <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 backdrop-blur-xl md:p-8">
+        <div className="mb-8 flex items-center gap-5 border-b border-white/10 pb-8">
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-accent-500 text-2xl font-bold text-white shadow-lg shadow-brand-500/20">
             {user?.name?.[0]?.toUpperCase() || "U"}
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+            <h2 className="text-lg font-semibold text-white">
               {user?.name}
             </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{user?.email}</p>
-            <span className="mt-2 inline-flex items-center rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-brand-700 dark:bg-brand-900/20 dark:text-brand-400">
+            <p className="text-sm text-zinc-400">{user?.email}</p>
+            <span className="mt-2 inline-flex items-center rounded-full bg-brand-500/10 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-brand-400">
               {user?.role}
             </span>
           </div>
@@ -109,13 +109,13 @@ export default function ProfilePage() {
           />
 
           {success && (
-            <div className="flex items-center gap-2 rounded-xl bg-emerald-50 p-4 text-sm font-medium text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400">
+            <div className="flex items-center gap-2 rounded-xl bg-emerald-500/10 p-4 text-sm font-medium text-emerald-400">
               <CheckCircle2 className="h-5 w-5" />
               {success}
             </div>
           )}
           {error && (
-            <div className="flex items-center gap-2 rounded-xl bg-red-50 p-4 text-sm font-medium text-red-700 dark:bg-red-900/20 dark:text-red-400">
+            <div className="flex items-center gap-2 rounded-xl bg-red-500/10 p-4 text-sm font-medium text-red-400">
               <AlertCircle className="h-5 w-5" />
               {error}
             </div>

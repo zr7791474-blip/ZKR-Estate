@@ -3,15 +3,23 @@ import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { messageSchema } from "@/lib/validations";
 
-export async function GET() {
+export async function GET(request: Request) {
   const session = await auth();
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const userId = (session.user as any).id;
+  const userRole = (session.user as any).role;
+  const { searchParams } = new URL(request.url);
+  const scope = searchParams.get("scope");
+
+  const where =
+    scope === "all" && userRole === "ADMIN"
+      ? {}
+      : { OR: [{ senderId: userId }, { receiverId: userId }] };
 
   const messages = await prisma.message.findMany({
-    where: { OR: [{ senderId: userId }, { receiverId: userId }] },
+    where,
     include: {
       sender: { select: { id: true, name: true, avatar: true } },
       receiver: { select: { id: true, name: true, avatar: true } }

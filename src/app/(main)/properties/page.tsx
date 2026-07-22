@@ -57,7 +57,7 @@ export default async function PropertiesPage({ searchParams }: PageProps) {
     <div className="section-padding min-h-screen bg-slate-50 dark:bg-slate-950">
       <div className="container-app">
         <div className="mb-8">
-          <h1 className="mb-2 text-3xl font-bold tracking-tight text-slate-900 md:text-4xl dark:text-white">
+          <h1 className="mb-2 font-display text-3xl font-medium tracking-tight text-slate-900 md:text-4xl dark:text-white">
             Discover Properties
           </h1>
           <p className="text-base text-slate-600 dark:text-slate-400">
