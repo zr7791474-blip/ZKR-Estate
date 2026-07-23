@@ -7,6 +7,7 @@ import {
   Twitter,
   MessageCircle,
   Github,
+  Instagram,
 } from "lucide-react";
 
 export function Footer() {
@@ -130,6 +131,16 @@ export function Footer() {
                 aria-label="Twitter"
               >
                 <Twitter className="h-5 w-5" />
+              </a>
+
+              <a
+                href="https://instagram.com/zkr_ad"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-800 text-slate-300 transition-all duration-200 hover:bg-pink-600 hover:text-white"
+                aria-label="Instagram"
+              >
+                <Instagram className="h-5 w-5" />
               </a>
 
               <a
